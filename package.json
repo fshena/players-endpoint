@@ -1,0 +1,42 @@
+{
+    "name": "@localleague/players-endpoint",
+    "version": "1.0.0",
+    "description": "Players API endpoint",
+    "main": "index.js",
+    "engines": {
+        "node": ">=4.2.6",
+        "npm": ">=3.5.2"
+    },
+    "scripts": {
+        "dev": "cross-env NODE_ENV=dev node_modules/.bin/nodemon src/server.js",
+        "test": "cross-env NODE_ENV=test mocha --timeout=10000 ./tests --exit",
+        "lint": "eslint ./",
+        "lint:fix": "eslint --fix ./"
+    },
+    "repository": {
+        "type": "vcs",
+        "url": "git@bitbucket.org:startingeleven/localleague-players-endpoint.git"
+    },
+    "author": "Florian Shena",
+    "license": "ISC",
+    "dependencies": {
+        "@localleague/database": "file:../database/",
+        "@localleague/helpers": "file:../helpers",
+        "@localleague/middleware": "file:../middleware",
+        "cross-env": "^5.1.3",
+        "dotenv": "^4.0.0",
+        "extract": "^1.0.0",
+        "http-status-codes": "^1.3.0",
+        "object-mapper": "^4.2.0",
+        "restify-errors": "^5.0.0"
+    },
+    "devDependencies": {
+        "chai": "^4.1.2",
+        "chai-http": "^3.0.0",
+        "eslint": "^4.10.0",
+        "eslint-config-google": "^0.9.1",
+        "mocha": "^5.0.0",
+        "nodemon": "^1.12.1",
+        "restify": "^6.3.1"
+    }
+}
