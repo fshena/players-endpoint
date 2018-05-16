@@ -1,7 +1,8 @@
 const players = require('../handler/player-handler');
 const validator = require('@localleague/middleware').validator;
 
-const getPlayerDto = require('./src/dto/get-dto');
+const getPlayerDto = require('../dto/get-dto');
+const cors = require('../config/cors');
 
 module.exports = (server) => {
     server.get(
@@ -31,6 +32,15 @@ module.exports = (server) => {
     server.del(
         {path: '/players/:id([0-9]+)', name: 'deletePlayers'},
         players.delete
+    );
+    server.opts(
+        {path: '/users([0-9]+)', name: 'optionsPlayers'},
+        (res, req, next) => {
+            res.status(httpStatus.OK);
+            res.setHeader('Access-Control-Allow-Methods',
+                cors.allowMethods.join(','));
+            res.json();
+        }
     );
 };
 

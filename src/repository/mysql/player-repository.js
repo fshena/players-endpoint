@@ -1,5 +1,6 @@
+const models = require('@localleague/database');
 const objHelper = require('@localleague/helpers').object;
-const models = require('@localleague/database/index');
+
 const Op = require('sequelize').Op;
 
 const apiConfig = require('../../config/api-config');
@@ -7,22 +8,22 @@ const getPlayerDto = require('../../dto/get-dto');
 
 /**
  * Get specific player entry.
- * @param {Object} req
+ * @param {{leagueId:numeric, fields:array}} payload
  * @return {Promise<Array<Model>>}
  */
-exports.getPlayerById = (req) => {
+exports.getPlayerById = payload => {
     let sqlQuery = {
         where: {
             [Op.and]: {
-                id: req.params.id,
+                id: payload.playerId,
             },
         },
         raw: true
     };
-    if (req.params.fields) {
+    if (payload.fields) {
         sqlQuery.attributes = objHelper.getDbFieldsNames(
             getPlayerDto.getMap(),
-            req.params.fields.split(',')
+            payload.fields.split(',')
         );
     }
     return models.Player.findOne(sqlQuery);

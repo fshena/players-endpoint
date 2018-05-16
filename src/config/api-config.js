@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path: process.env.npm_package_config_envFilePath});
 
 const config = {
     dev: {

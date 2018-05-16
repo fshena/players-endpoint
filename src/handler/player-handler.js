@@ -1,7 +1,7 @@
 const paginationLinks = require('@localleague/helpers').paginationLinks;
 const HttpStatus = require('http-status-codes');
 
-const maxLimit = require('../../config/api-config').query.maxLimit;
+const maxLimit = require('../config/api-config').query.maxLimit;
 const playerMySqlRepository = require('../repository/mysql/player-repository');
 const errorHandler = require('./error-handler');
 const getPlayerDto = require('../dto/get-dto');
@@ -13,7 +13,7 @@ const playerCollectionDto = require('../dto/collection-dto');
  * Query database for using player id.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.getById = (req, res, next) => {
     const sendResponse = (player) => {
@@ -25,15 +25,16 @@ exports.getById = (req, res, next) => {
         res.json(getPlayerDto.map(player));
     };
     playerMySqlRepository
-        .getPlayerById(req)
-        .then(sendResponse);
+        .getPlayerById({playerId: req.params.id, fields: req.params.fields})
+        .then(sendResponse)
+        .catch(errors => errorHandler.model(errors, next))
 };
 
 /**
  * Get all player form the database.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.get = (req, res, next) => {
     const sendResponse = (players) => {
@@ -46,14 +47,15 @@ exports.get = (req, res, next) => {
     };
     playerMySqlRepository
         .getAllPlayers(req)
-        .then(sendResponse);
+        .then(sendResponse)
+        .catch(errors => errorHandler.model(errors, next))
 };
 
 /**
  * Save players in the database.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.post = (req, res, next) => {
     const sendResponse = (player, created) => {
@@ -78,7 +80,7 @@ exports.post = (req, res, next) => {
  * Update players data.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.put = (req, res, next) => {
     const sendResponse = (updated) => {
@@ -98,7 +100,7 @@ exports.put = (req, res, next) => {
  * Delete player from the database.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.delete = (req, res, next) => {
     const sendResponse = (deleted) => {
@@ -109,14 +111,15 @@ exports.delete = (req, res, next) => {
     };
     playerMySqlRepository
         .deletePlayer(req.params.id)
-        .then(sendResponse);
+        .then(sendResponse)
+        .catch(errors => errorHandler.model(errors, next));
 };
 
 /**
  * Update specific player fields.
  * @param {Object} req
  * @param {Object} res
- * @param {Object} next
+ * @param {function} next
  */
 exports.patch = (req, res, next) => {
     // Find player with the specific id.
@@ -127,5 +130,6 @@ exports.patch = (req, res, next) => {
     };
     playerMySqlRepository
         .patchPlayer(req.params.id, req.body)
-        .then(sendResponse);
+        .then(sendResponse)
+        .catch(errors => errorHandler.model(errors, next));
 };
