@@ -16,7 +16,7 @@ const playerCollectionDto = require('../dto/collection-dto');
  * @param {function} next
  */
 exports.getById = (req, res, next) => {
-    const sendResponse = (player) => {
+    const sendResponse = player => {
         const status = player ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         res.status(status);
         if (status === HttpStatus.NOT_FOUND) {
@@ -37,7 +37,7 @@ exports.getById = (req, res, next) => {
  * @param {function} next
  */
 exports.get = (req, res, next) => {
-    const sendResponse = (players) => {
+    const sendResponse = players => {
         res.set({
             'Link': paginationLinks(req, players.count, maxLimit),
             'X-Total-Count': players.count,
@@ -68,7 +68,7 @@ exports.post = (req, res, next) => {
         // The link where to find the new player or the existing one.
         res.header('Content-Location', req.route.path + '/' + createdPlayer.id);
         res.status(status);
-        res.json(getPlayerDto.map(createdPlayer));
+        res.json(getPlayerDto.map(player));
     };
     playerMySqlRepository
         .createPlayer(postPlayerDto(req.body))

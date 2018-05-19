@@ -3,24 +3,40 @@ require('dotenv').config();
 const models = require('@localleague/database');
 
 const server = require('../../devServer');
+const playersMysqlRepository = require('../../src/repository/mysql/player-repository');
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
+const assert = chai.assert;
 
 chai.use(chaiHttp);
 
-models.Player.sync({force: true});
+const playerRecord = {
+    userId: 1,
+    birthday: new Date('1987-03-12'),
+    height: 180,
+    weight: 70,
+};
 
 describe('Player', () => {
+    before(async () => {
+        await models.sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+        await models.Player.sync({force: true});
+        await models.User.sync({force: true});
+        await models.User.create({
+            username: 'florian_shena',
+            first_name: 'Florian',
+            last_name: 'Shena',
+            email: 'florian.shena@gmail.com',
+            password: '$2a$10$1AErvNU3REKSQtKjEDBeXOBK6YFfUekAE6KeFSxd.bG01AqoQr5JC', // password
+            role_id: 0,
+            is_active: 0,
+        });
+        await models.sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+    });
     describe('POST /players', () => {
         it('should create a Player record and return its link', done => {
-            const playerRecord = {
-                user_id: 101,
-                birthday: '1987-03-12',
-                height: 180,
-                weight: 70,
-            };
             chai.request(server)
                 .post('/players')
                 .set('Authorization', process.env.TEST_TOKEN)
@@ -29,15 +45,20 @@ describe('Player', () => {
                 .end((err, res) => {
                     res.should.have.status(201);
                     res.should.have.header('content-location');
-                    done();
+                    playersMysqlRepository
+                        .getPlayerById({playerId: 1})
+                        .then(player => {
+                            player.should.be.an('object');
+                            done();
+                        });
                 });
         });
     });
     describe('PUT /players/:id', () => {
         it('should replace a Player record with a new one', done => {
             const playerRecord = {
-                user_id: 102,
-                birthday: '1987-2-12',
+                user_id: 1,
+                birthday: new Date('1987-03-12'),
                 height: 180,
                 weight: 68,
             };
@@ -48,7 +69,13 @@ describe('Player', () => {
                 .send(playerRecord)
                 .end((err, res) => {
                     res.should.have.status(204);
-                    done();
+                    playersMysqlRepository
+                        .getPlayerById({playerId: 1})
+                        .then(player => {
+                            player.should.be.an('object');
+                            assert.equal(player.user_id, 1);
+                            done();
+                        });
                 });
         });
     });
@@ -65,7 +92,13 @@ describe('Player', () => {
                 .send(patch)
                 .end((err, res) => {
                     res.should.have.status(204);
-                    done();
+                    playersMysqlRepository
+                        .getPlayerById({playerId: 1})
+                        .then(player => {
+                            player.should.be.an('object');
+                            assert.equal(player.weight, 75);
+                            done();
+                        });
                 });
         });
     });
@@ -111,16 +144,17 @@ describe('Player', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an('object');
+                    res.body.should.be.an('object').that.has.all.keys('id', 'firstName', 'birthday');
                     done();
                 });
         });
-        it('should return a Player object with fields: id, user_id, birthday', done => {
+        it('should return a Player object with fields: id, birthday', done => {
             chai.request(server)
-                .get('/players/1?fields=id,user_id,birthday')
+                .get('/players/1?fields=id,firstName,birthday')
                 .set('Authorization', process.env.TEST_TOKEN)
                 .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.should.be.an('object').that.has.all.keys('id', 'user_id', 'birthday');
+                    res.body.should.be.an('object').that.has.all.keys('id', 'firstName', 'birthday');
                     done();
                 });
         });
@@ -133,17 +167,21 @@ describe('Player', () => {
                     done();
                 });
         });
-
     });
-    describe('DELETE /players/:id', () => {
+    /*describe('DELETE /players/:id', () => {
         it('should delete a Player record', done => {
             chai.request(server)
                 .delete('/players/1')
                 .set('Authorization', process.env.TEST_TOKEN)
                 .end((err, res) => {
                     res.should.have.status(204);
-                    done();
+                    playersMysqlRepository
+                        .getPlayerById({playerId: 1})
+                        .then(player => {
+                            assert.equal(player, null);
+                            done();
+                        });
                 });
         });
-    });
+    });*/
 });

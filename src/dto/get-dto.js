@@ -1,6 +1,4 @@
 const objMapper = require('object-mapper');
-const extract = require('extract');
-const objHelper = require('@localleague/helpers').object;
 
 const mapping = {
     user: {
@@ -48,7 +46,6 @@ module.exports = {
      * @return {*}
      */
     map: (player, reverse) => {
-        player = player.get({plain: true});
         return objMapper(player, mapping.merged);
     }
 };

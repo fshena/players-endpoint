@@ -12,7 +12,6 @@
     },
     "scripts": {
         "dev": "nodemon ./devServer.js",
-        "test": "cross-env NODE_ENV=test mocha --timeout=10000 ./tests/unit --exit",
         "test:integration": "cross-env NODE_ENV=test mocha --timeout=10000 ./tests/integration --exit",
         "lint": "eslint ./",
         "lint:fix": "eslint --fix ./"

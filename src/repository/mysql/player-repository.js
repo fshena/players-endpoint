@@ -18,13 +18,33 @@ exports.getPlayerById = payload => {
                 id: payload.playerId,
             },
         },
+        include: [
+            {
+                model: models.User,
+                required: true
+            },
+        ],
         raw: true
     };
+    // since the player's attributes are held on the 'user' and 'player' table,
+    // we need to request the fields from separate models.
     if (payload.fields) {
-        sqlQuery.attributes = objHelper.getDbFieldsNames(
-            getPlayerDto.getMap(),
+        // get the players' fields that can be included in the request
+        const playerFields = objHelper.getDbFieldsNames(
+            getPlayerDto.getMap('player'),
             payload.fields.split(',')
         );
+        if (playerFields) {
+            sqlQuery.attributes = playerFields;
+        }
+        // get the users' fields that can be included in the request
+        const userFields = objHelper.getDbFieldsNames(
+            getPlayerDto.getMap('user'),
+            payload.fields.split(',')
+        );
+        if (userFields) {
+            sqlQuery.include[0].attributes = userFields;
+        }
     }
     return models.Player.findOne(sqlQuery);
 };
@@ -34,7 +54,7 @@ exports.getPlayerById = payload => {
  * @param {Object} req
  * @return {Promise<Array<Model>>}
  */
-exports.getAllPlayers = (req) => {
+exports.getAllPlayers = req => {
     let limit = parseInt(req.query.limit) || apiConfig.query.maxLimit;
     let sqlQuery = {
         limit: limit,
@@ -51,26 +71,25 @@ exports.getAllPlayers = (req) => {
                 required: true
             },
         ],
-        // raw: true,
     };
     // since the player's attributes are held on the 'user' and 'player' table,
     // we need to request the fields from separate models.
     if (req.params.fields) {
         // get the players' fields that can be included in the request
-        const userFieldsInclude = objHelper.getDbFieldsNames(
+        const playerFields = objHelper.getDbFieldsNames(
             getPlayerDto.getMap('player'),
             req.params.fields.split(',')
         );
-        if (userFieldsInclude) {
-            sqlQuery.attributes = userFieldsInclude;
+        if (playerFields) {
+            sqlQuery.attributes = playerFields;
         }
         // get the users' fields that can be included in the request
-        const playerFieldsInclude = objHelper.getDbFieldsNames(
+        const userFields = objHelper.getDbFieldsNames(
             getPlayerDto.getMap('user'),
             req.params.fields.split(',')
         );
-        if (playerFieldsInclude) {
-            sqlQuery.include[0].attributes = playerFieldsInclude;
+        if (userFields) {
+            sqlQuery.include[0].attributes = userFields;
         }
     }
     return models.Player.findAndCountAll(sqlQuery);
@@ -81,11 +100,11 @@ exports.getAllPlayers = (req) => {
  * @param {Object} newPlayer
  * @return {Promise<Model, created>}
  */
-exports.createPlayer = (newPlayer) => {
+exports.createPlayer = newPlayer => {
     const conditions = {
         where: {
             [Op.and]: {
-                email: newPlayer.email,
+                user_id: newPlayer.userId,
             },
         },
         defaults: newPlayer,
