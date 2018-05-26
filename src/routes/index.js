@@ -4,7 +4,7 @@ const validator = require('@localleague/middleware').validator;
 const getPlayerDto = require('../dto/get-dto');
 const cors = require('../config/cors');
 
-module.exports = (server) => {
+module.exports = server => {
     server.get(
         {path: '/players', name: 'getPlayers'},
         validator.query,
