@@ -1,18 +1,17 @@
-const models = require('@localleague/database');
-const objHelper = require('@localleague/helpers').object;
+const { object: objHelper }   = require('@localleague/helpers');
+const { Op }                  = require('sequelize');
 
-const Op = require('sequelize').Op;
-
-const apiConfig = require('../../config/api-config');
-const getPlayerDto = require('../../dto/get-dto');
+const { query: { maxLimit } } = require('../../config/api-config');
+const models                  = require('../../models');
+const getPlayerDto            = require('../../dto/get-dto');
 
 /**
  * Get specific player entry.
- * @param {{leagueId:numeric, fields:array}} payload
+ * @param {{playerId:numeric, fields:array}} payload
  * @return {Promise<Array<Model>>}
  */
-exports.getPlayerById = payload => {
-    let sqlQuery = {
+exports.getPlayerById = (payload) => {
+    const sqlQuery = {
         where: {
             [Op.and]: {
                 id: payload.playerId,
@@ -24,7 +23,6 @@ exports.getPlayerById = payload => {
                 required: true
             },
         ],
-        raw: true
     };
     // since the player's attributes are held on the 'user' and 'player' table,
     // we need to request the fields from separate models.
@@ -54,14 +52,14 @@ exports.getPlayerById = payload => {
  * @param {Object} req
  * @return {Promise<Array<Model>>}
  */
-exports.getAllPlayers = req => {
-    let limit = parseInt(req.query.limit) || apiConfig.query.maxLimit;
-    let sqlQuery = {
-        limit: limit,
-        offset: parseInt(req.query.offset) * limit || 0,
+exports.getAllPlayers = (req) => {
+    const limit = parseInt(req.query.limit, 10) || maxLimit;
+    const sqlQuery = {
+        limit,
+        offset: parseInt(req.query.offset, 10) * limit || 0,
         order: [
             [
-                req.query.sort || models.User.attributes.username,
+                req.query.sort || models.User.attributes.email,
                 req.query.order || 'ASC',
             ],
         ],
@@ -100,7 +98,7 @@ exports.getAllPlayers = req => {
  * @param {Object} newPlayer
  * @return {Promise<Model, created>}
  */
-exports.createPlayer = newPlayer => {
+exports.createPlayer = (newPlayer) => {
     const conditions = {
         where: {
             [Op.and]: {
@@ -122,7 +120,7 @@ exports.updatePlayer = (id, updatePlayer) => {
     const conditions = {
         where: {
             [Op.and]: {
-                id: id,
+                id,
             },
         },
     };
@@ -138,28 +136,9 @@ exports.deletePlayer = (id) => {
     const conditions = {
         where: {
             [Op.and]: {
-                id: id,
+                id,
             },
         },
     };
     return models.Player.destroy(conditions);
-};
-
-/**
- * Update specific fields of a player entry.
- * @param {integer} id
- * @param {Object} data
- * @return {Promise}
- */
-exports.patchPlayer = (id, data) => {
-    let attributes = {};
-    attributes[data.path] = data.value;
-    const conditions = {
-        where: {
-            [Op.and]: {
-                id: id,
-            },
-        },
-    };
-    return models.Player.update(attributes, conditions);
 };

@@ -1,3 +1,1 @@
-module.exports = server => {
-    require('./src/routes/index')(server);
-};
+module.exports = require('./src/routes/index');

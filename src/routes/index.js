@@ -1,49 +1,35 @@
-const players = require('../handler/player-handler');
-const validator = require('@localleague/middleware').validator;
+const { validator } = require('@localleague/middleware');
 
-const getPlayerDto = require('../dto/get-dto');
-const cors = require('../config/cors');
+const getPlayerDto  = require('../dto/get-dto');
+const players       = require('../handler/player-handler');
 
-module.exports = server => {
+module.exports = (server) => {
     server.get(
-        {path: '/players', name: 'getPlayers'},
+        { path: '/players', name: 'getPlayers' },
         validator.query,
         validator.fields(getPlayerDto),
         players.get
     );
     server.get(
-        {path: '/players/:id([0-9]+)', name: 'getPlayersById'},
+        { path: '/players/:id([0-9]+)', name: 'getPlayersById' },
         validator.query,
         validator.fields(getPlayerDto),
         players.getById
     );
     server.post(
-        {path: '/players', name: 'postPlayers'},
+        { path: '/players', name: 'postPlayers' },
         players.post
     );
     server.put(
-        {path: '/players/:id([0-9]+)', name: 'putPlayers'},
+        { path: '/players/:id([0-9]+)', name: 'putPlayers' },
         players.put
     );
-    server.patch(
-        {path: '/players/:id([0-9]+)', name: 'patchPlayers'},
-        players.patch
-    );
     server.del(
-        {path: '/players/:id([0-9]+)', name: 'deletePlayers'},
+        { path: '/players/:id([0-9]+)', name: 'deletePlayers' },
         players.delete
     );
-    server.opts(
-        {path: '/users([0-9]+)', name: 'optionsPlayers'},
-        (res, req, next) => {
-            res.status(httpStatus.OK);
-            res.setHeader('Access-Control-Allow-Methods',
-                cors.allowMethods.join(','));
-            res.json();
-        }
+    server.get(
+        { path: '/players/swagger.json', name: 'docsPlayers' },
+        players.docs
     );
 };
-
-
-
-

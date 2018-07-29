@@ -7,10 +7,11 @@ const objMapper = require('object-mapper');
  */
 module.exports = (player) => {
     const src = {
-        'userId': 'user_id',
-        'birthday': 'birthday',
-        'height': 'height',
-        'weight': 'weight',
+        userId: 'user_id',
+        username: 'username',
+        birthday: 'birthday',
+        height: 'height',
+        weight: 'weight',
     };
     return objMapper(player, src);
 };

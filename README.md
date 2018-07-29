@@ -1,71 +1,39 @@
 # Local League "Players" endpoint
 
-[![NPM version][npm-image]][npm-url]
-[![NPM downloads][downloads-image]][downloads-url]
-
-Create my standard node module template.
-
-**Psst! Install [`mversion`](https://github.com/mikaelbr/mversion) to automatically version and tag all package files by running `mversion [ major | minor | patch | prerelease | x.x.x-x ] -m`**
-
 ## Installation
 
 ```sh
-npm install node-module-template -g
+npm install @localleague/players-endpoint 
 ```
 
 ## Usage
 
-```sh
-node-module-template foobar
-
-# Creating module...
-
-cd foobar && ls
-# bower.json
-# package.json
-# README.md
-# ...
+Import the endpoint package & pass a Restify server instance:
+```javascript
+require('@localleague/players-endpoint')(server);
 ```
-
 And you're good to go!
 
-### Arguments
+## Test 
 
-* `-h, --help` output usage information
-* `-V, --version` output the version number
-* `-a, --author [value]` set the author string
-* `-l, --license [value]` set the module license
-* `-u, --username [value]` set the repository github username
-* `-r, --repo [value]` set the module repository name on github
-* `-d, --dev` create a dev package
+Run migration, which creates a "player" table in the test database:
+```sh
+npm run db:test:migrate 
+```
 
-## Interesting Modules
+Run integration tests for the endpoint:
+```sh
+npm run test:integration 
+```
+## Documentation
 
-### CLI
+The documentation for the endpoint is generated using the [OpenAPI 3](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) specifications and [Swagger](https://swagger.io).
 
-* [mversion](https://github.com/mikaelbr/mversion) `npm install mversion -g`
-* [npm-dview](https://github.com/skratchdot/npm-dview) `npm install npm-dview -g`
-* [notes](https://github.com/stephenb/node-notes) `npm install notes -g`
-* [david](https://github.com/alanshaw/david) `npm install david -g`
-* [serve](https://www.npmjs.com/package/serve) `npm install serve -g`
-* [travis](https://github.com/travis-ci/travis.rb) `gem install travis`
+Using the path "/swagger.json" the JSON representation of the docs can be retrieved and used in the [Swagger Editor](http://editor.swagger.io) for reading and testing.
 
-### Dependencies
+## Todo
 
-* [Bunyan](https://github.com/trentm/node-bunyan) `npm install bunyan --save`
-* [Express](https://github.com/strongloop/express) `npm install express --save`
-* [VError](https://github.com/davepacheco/node-verror) `npm install verror --save`
-* [Popsicle](https://github.com/blakeembrey/popsicle) `npm install popsicle --save`
-* [Debug](https://github.com/visionmedia/debug) `npm install debug --save`
-* [Browserify](https://github.com/substack/node-browserify) `npm install browserify --save-dev`
-* [Karma](https://github.com/karma-runner/karma) `npm install karma --save-dev`
-* [Gulp](https://github.com/gulpjs/gulp) `npm install gulp --save-dev`
+1. Create unit tests
+2. Write swagger doc
 
-## License
-
-MIT
-
-[npm-image]: https://img.shields.io/npm/v/node-module-template.svg?style=flat
-[npm-url]: https://npmjs.org/package/node-module-template
-[downloads-image]: https://img.shields.io/npm/dm/node-module-template.svg?style=flat
-[downloads-url]: https://npmjs.org/package/node-module-template
+## Issues

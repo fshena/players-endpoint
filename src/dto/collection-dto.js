@@ -7,8 +7,9 @@ const getPlayerDto = require('./get-dto');
  * @return {*}
  */
 module.exports = (players) => {
+    const playersDto = [];
     players.forEach((player, index) => {
-        players[index] = getPlayerDto.map(player);
+        playersDto[index] = getPlayerDto.map(player);
     });
-    return players;
+    return playersDto;
 };

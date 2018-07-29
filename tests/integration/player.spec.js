@@ -1,19 +1,18 @@
 require('dotenv').config();
 
-const models = require('@localleague/database');
-
-const server = require('../../devServer');
+const models   = require('../../src/models/index');
+const server   = require('../../devServer');
 const playersMysqlRepository = require('../../src/repository/mysql/player-repository');
-
-const chai = require('chai');
+const chai     = require('chai');
 const chaiHttp = require('chai-http');
-const should = chai.should();
-const assert = chai.assert;
+const should   = chai.should();
+const assert   = chai.assert;
 
 chai.use(chaiHttp);
 
 const playerRecord = {
     userId: 1,
+    username: 'florian_shena',
     birthday: new Date('1987-03-12'),
     height: 180,
     weight: 70,
@@ -25,7 +24,6 @@ describe('Player', () => {
         await models.Player.sync({force: true});
         await models.User.sync({force: true});
         await models.User.create({
-            username: 'florian_shena',
             first_name: 'Florian',
             last_name: 'Shena',
             email: 'florian.shena@gmail.com',
@@ -58,6 +56,7 @@ describe('Player', () => {
         it('should replace a Player record with a new one', done => {
             const playerRecord = {
                 user_id: 1,
+                username: 'whatever',
                 birthday: new Date('1987-03-12'),
                 height: 180,
                 weight: 68,
@@ -70,33 +69,10 @@ describe('Player', () => {
                 .end((err, res) => {
                     res.should.have.status(204);
                     playersMysqlRepository
-                        .getPlayerById({playerId: 1})
+                        .getPlayerById({ playerId: 1 })
                         .then(player => {
                             player.should.be.an('object');
                             assert.equal(player.user_id, 1);
-                            done();
-                        });
-                });
-        });
-    });
-    describe('PATCH /players/:id', () => {
-        it('should update a Player record field value', done => {
-            const patch =  {
-                "op": "update",
-                "path": "weight",
-                "value": 75
-            };
-            chai.request(server)
-                .patch('/players/1')
-                .set('Authorization', process.env.TEST_TOKEN)
-                .send(patch)
-                .end((err, res) => {
-                    res.should.have.status(204);
-                    playersMysqlRepository
-                        .getPlayerById({playerId: 1})
-                        .then(player => {
-                            player.should.be.an('object');
-                            assert.equal(player.weight, 75);
                             done();
                         });
                 });
@@ -144,7 +120,6 @@ describe('Player', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an('object');
-                    res.body.should.be.an('object').that.has.all.keys('id', 'firstName', 'birthday');
                     done();
                 });
         });

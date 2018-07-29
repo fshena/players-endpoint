@@ -14,5 +14,5 @@ exports.model = (errors, next) => {
             message: errors.message,
         }));
     }
-    next();
+    return next();
 };
