@@ -1,5 +1,5 @@
 const restifyErrors = require('restify-errors');
-const httpStatus = require('http-status-codes');
+const httpStatus    = require('http-status-codes');
 
 /**
  * Throw Restify errors
@@ -7,7 +7,7 @@ const httpStatus = require('http-status-codes');
  * @param {Object } next
  * @return {*}
  */
-exports.model = (errors, next) => {
+module.exports = (errors, next) => {
     if (errors) {
         return next(new restifyErrors.BadRequestError({
             code: httpStatus.BAD_REQUEST,

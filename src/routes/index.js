@@ -1,35 +1,34 @@
-const { validator } = require('@localleague/middleware');
-
-const getPlayerDto  = require('../dto/get-dto');
-const players       = require('../handler/player-handler');
+const queryMiddleware   = require('../middleware/query-middleware');
+const fieldsMiddleware  = require('../middleware/fields-middleware');
+const playersController = require('../controllers/player-controller');
 
 module.exports = (server) => {
     server.get(
         { path: '/players', name: 'getPlayers' },
-        validator.query,
-        validator.fields(getPlayerDto),
-        players.get
+        queryMiddleware,
+        fieldsMiddleware,
+        playersController.get
     );
     server.get(
         { path: '/players/:id([0-9]+)', name: 'getPlayersById' },
-        validator.query,
-        validator.fields(getPlayerDto),
-        players.getById
+        queryMiddleware,
+        fieldsMiddleware,
+        playersController.getById
     );
     server.post(
         { path: '/players', name: 'postPlayers' },
-        players.post
+        playersController.post
     );
     server.put(
         { path: '/players/:id([0-9]+)', name: 'putPlayers' },
-        players.put
+        playersController.put
     );
     server.del(
         { path: '/players/:id([0-9]+)', name: 'deletePlayers' },
-        players.delete
+        playersController.delete
     );
     server.get(
         { path: '/players/swagger.json', name: 'docsPlayers' },
-        players.docs
+        playersController.docs
     );
 };

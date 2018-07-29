@@ -35,5 +35,6 @@ Using the path "/swagger.json" the JSON representation of the docs can be retrie
 
 1. Create unit tests
 2. Write swagger doc
+3. Fix integration test 
 
 ## Issues

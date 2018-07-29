@@ -4,7 +4,7 @@ const yaml                    = require('yamljs');
 
 const { query: { maxLimit } } = require('../config/api-config');
 const playerMySqlRepository   = require('../repository/mysql/player-repository');
-const errorHandler            = require('./error-handler');
+const errorController         = require('./error-controller');
 const getPlayerDto            = require('../dto/get-dto');
 const postPlayerDto           = require('../dto/post-dto');
 const putPlayerDto            = require('../dto/put-dto');
@@ -28,7 +28,7 @@ exports.getById = (req, res, next) => {
     playerMySqlRepository
         .getPlayerById({ playerId: req.params.id, fields: req.params.fields })
         .then(sendResponse)
-        .catch(errors => errorHandler.model(errors, next));
+        .catch(errors => errorController(errors, next));
 };
 
 /**
@@ -49,7 +49,7 @@ exports.get = (req, res, next) => {
     playerMySqlRepository
         .getAllPlayers(req)
         .then(sendResponse)
-        .catch(errors => errorHandler.model(errors, next));
+        .catch(errors => errorController(errors, next));
 };
 
 /**
@@ -74,7 +74,7 @@ exports.post = (req, res, next) => {
     playerMySqlRepository
         .createPlayer(postPlayerDto(req.body))
         .spread(sendResponse)
-        .catch(errors => errorHandler.model(errors, next));
+        .catch(errors => errorController(errors, next));
 };
 
 /**
@@ -94,7 +94,7 @@ exports.put = (req, res, next) => {
     playerMySqlRepository
         .updatePlayer(req.params.id, putPlayerDto(req.body))
         .then(sendResponse)
-        .catch(errors => errorHandler.model(errors, next));
+        .catch(errors => errorController(errors, next));
 };
 
 /**
@@ -113,7 +113,7 @@ exports.delete = (req, res, next) => {
     playerMySqlRepository
         .deletePlayer(req.params.id)
         .then(sendResponse)
-        .catch(errors => errorHandler.model(errors, next));
+        .catch(errors => errorController(errors, next));
 };
 
 /**

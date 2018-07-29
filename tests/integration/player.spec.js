@@ -143,7 +143,7 @@ describe('Player', () => {
                 });
         });
     });
-    /*describe('DELETE /players/:id', () => {
+    describe('DELETE /players/:id', () => {
         it('should delete a Player record', done => {
             chai.request(server)
                 .delete('/players/1')
@@ -158,5 +158,5 @@ describe('Player', () => {
                         });
                 });
         });
-    });*/
+    });
 });
