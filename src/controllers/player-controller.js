@@ -122,6 +122,6 @@ exports.delete = (req, res, next) => {
  * @param {Object} res
  */
 exports.docs = (req, res) => {
-    const nativeObj = YAML.load(`${__dirname}/../../docs/swagger.yaml`);
+    const nativeObj = yaml.load(`${__dirname}/../../docs/swagger.yaml`);
     res.json(nativeObj);
 };
