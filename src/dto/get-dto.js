@@ -17,7 +17,7 @@ const mapping = {
         weight: 'weight',
     },
     merged: {
-        'User.id': 'userId',
+        'User.id': 'id',
         'User.first_name': 'firstName',
         'User.last_name': 'lastName',
         'User.email': 'email',

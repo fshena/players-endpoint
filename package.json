@@ -24,7 +24,7 @@
     },
     "main": "index.js",
     "dependencies": {
-        "@localleague/database": "^1.2.2",
+        "@localleague/database": "^3.0.1",
         "@localleague/helpers": "^1.0.0",
         "@localleague/users-endpoint": "^1.2.1",
         "cross-env": "^5.1.3",
